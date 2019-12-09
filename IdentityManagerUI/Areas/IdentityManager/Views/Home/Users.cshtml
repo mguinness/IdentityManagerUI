@@ -1,0 +1,285 @@
+@{
+    ViewData["Title"] = "Users Page";
+}
+
+<link rel="stylesheet" href="//cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" />
+<link rel="stylesheet" href="//cdn.datatables.net/select/1.2.5/css/select.dataTables.min.css" />
+<link rel="stylesheet" href="//cdn.datatables.net/buttons/1.5.1/css/buttons.dataTables.min.css" />
+
+<h2>User List</h2>
+
+<div class="row">
+    <div class="col-md-12">
+        <table id="usersTable" class="table table-striped table-bordered" data-processing="true" data-server-side="true" data-ajax="/api/UserList">
+            <thead>
+                <tr>
+                    <th data-data="id">Id</th>
+                    <th data-data="email">Email</th>
+                    <th data-data="userName">UserName</th>
+                    <th data-data="displayName" data-default-content="" data-orderable="false">Name</th>
+                    <th data-data="roles" data-orderable="false">Roles</th>
+                    <th data-data="lockedOut" data-orderable="false">Locked</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+<modal id="userModal" title="Add User">
+    <modal-body>
+        <form id="userForm" data-ajax="true" data-ajax-method="POST" data-ajax-url="/api/CreateUser" data-ajax-success="userDone" data-ajax-failure="userFail">
+            <div id="userError" class="alert alert-danger" role="alert"></div>
+
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input name="username" type="text" class="form-control" required />
+
+                <label for="name">Name:</label>
+                <input name="name" type="text" class="form-control" />
+
+                <label for="email">Email:</label>
+                <input name="email" type="email" class="form-control" required />
+
+                <label for="password">Password:</label>
+                <input name="password" type="password" class="form-control" required />
+            </div>
+        </form>
+    </modal-body>
+    <modal-footer dismiss-text="Cancel">
+        <button type="submit" form="userForm" class="btn btn-primary">Create</button>
+    </modal-footer>
+</modal>
+
+<modal id="editModal" title="Edit User" size="Large">
+    <modal-body>
+        <form id="editForm" data-ajax="true" data-ajax-method="POST" data-ajax-url="/api/UpdateUser" data-ajax-success="editDone" data-ajax-failure="editFail">
+            <div id="editError" class="alert alert-danger" role="alert"></div>
+
+            <ul id="tabs" class="nav nav-tabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" data-toggle="tab" href="#user">User</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#roles">Roles</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#claims">Claims</a>
+                </li>
+            </ul>
+
+            <br />
+
+            <div class="tab-content">
+                <div id="user" class="tab-pane active">
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input name="email" type="email" class="form-control" required />
+                        <label for="locked">Locked:</label>
+                        <input name="locked" type="checkbox" class="checkbox" value="Yes" style="display:flex">
+                        <input name="id" type="hidden" />
+                    </div>
+                </div>
+                <div id="roles" class="tab-pane">
+                    <div class="form-group">
+                        @foreach (var role in ViewBag.Roles)
+                        {
+                            <div class="checkbox">
+                                <label><input name="roles" type="checkbox" value="@role.Value">@role.Value</label>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div id="claims" class="tab-pane">
+                    <table id="claimsTable" class="table table-sm">
+                        <tbody>
+                            <tr>
+                                <th>Type</th>
+                                <th>Value</th>
+                                <th>Action</th>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td>
+                                    <select id="newType" asp-items="@(new SelectList(ViewBag.ClaimTypes))">
+                                        <option></option>
+                                    </select>
+                                </td>
+                                <td><input id="newValue" type="text"></td>
+                                <td><a id="addClaim" href="#">Add</a></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </form>
+    </modal-body>
+    <modal-footer dismiss-text="Cancel">
+        <button type="submit" form="editForm" class="btn btn-primary">Update</button>
+    </modal-footer>
+</modal>
+
+<modal id="pwdModal" title="Reset Password">
+    <modal-body>
+        <form id="pwdForm" data-ajax="true" data-ajax-method="POST" data-ajax-url="/api/ResetPassword" data-ajax-success="pwdDone" data-ajax-failure="pwdFail">
+            <div id="pwdError" class="alert alert-danger" role="alert"></div>
+
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input name="password" type="password" class="form-control" required />
+                <label for="verify">Verify:</label>
+                <input name="verify" type="password" class="form-control" required />
+                <input name="id" type="hidden" />
+            </div>
+        </form>
+    </modal-body>
+    <modal-footer dismiss-text="Cancel">
+        <button type="submit" form="pwdForm" class="btn btn-primary">Reset</button>
+    </modal-footer>
+</modal>
+
+@section Scripts {
+    <script src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script src="//cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
+    <script src="//cdn.datatables.net/select/1.2.5/js/dataTables.select.min.js"></script>
+    <script src="//cdn.datatables.net/buttons/1.5.1/js/dataTables.buttons.min.js"></script>
+    <script src="//ajax.aspnetcdn.com/ajax/jquery.unobtrusive-ajax/3.2.5/jquery.unobtrusive-ajax.min.js"></script>
+
+    <script>
+        $(function () {
+            $('#usersTable').DataTable({
+                dom: 'Bfrtip',
+                select: true,
+                buttons: [
+                    {
+                        text: "New",
+                        action: function (e, dt, button, config) {
+                            $('#userError').hide();
+                            $('#userForm').trigger('reset');
+                            $('#userModal').modal({ backdrop: 'static' });
+                        }
+                    },
+                    {
+                        extend: "selectedSingle",
+                        text: "Edit",
+                        action: function (e, dt, button, config) {
+                            var data = dt.row({ selected: true }).data();
+                            $('#editError').hide();
+                            $('#tabs a:first').tab('show');
+                            $('#editForm').trigger('reset');
+                            $('#claimsTable tbody tr:not(:first)').remove();
+
+                            $('#editForm input[name=email]').val(data.email);
+                            $('#editForm input[name=locked]').prop('checked', data.lockedOut);
+                            $('#editForm input[name=id]').val(data.id);
+
+                            $.each(data.roles, function (index, value) {
+                                $('#editForm :checkbox[value=' + value + ']').prop('checked', true);
+                            });
+
+                            $.each(data.claims, function (index, value) {
+                                //Key/Value props not camel cased (https://github.com/dotnet/corefx/issues/41309)
+                                $('#claimsTable tbody').append('<tr><td data-field="Key">' + value.Key + '</td>' +
+                                    '<td data-field="Value">' + value.Value + '</td><td><a class="removeClaim" href="#">Remove</a></td></tr>');
+                            });
+
+                            $('#editModal').modal({ backdrop: 'static' });
+                        }
+                    },
+                    {
+                        extend: "selectedSingle",
+                        text: "Delete",
+                        action: function (e, dt, button, config) {
+                            if (confirm('Are you sure?')) {
+                                var data = dt.row({ selected: true }).data();
+
+                                $.ajax({
+                                    type: 'DELETE',
+                                    url: '/api/DeleteUser',
+                                    data: { id: data.id }
+                                })
+                                    .done(delDone)
+                                    .fail(delFail);
+                            }
+                        }
+                    },
+                    {
+                        extend: "selectedSingle",
+                        text: "Password",
+                        action: function (e, dt, button, config) {
+                            var data = dt.row({ selected: true }).data();
+                            $('#pwdError').hide();
+                            $('#pwdForm').trigger('reset');
+                            $('#pwdForm input[name=id]').val(data.id);
+                            $('#pwdModal').modal({ backdrop: 'static' });
+                        }
+                    }
+                ],
+                "createdRow": function(row, data) {
+                    if (data.lockedOut)
+                        $(row).addClass('table-danger');
+                }
+            });
+        });
+
+        $('#claimsTable').on('click', 'a.removeClaim', function () {
+            if (confirm('Are you sure?'))
+                $(this).closest('tr').remove();
+        });
+
+        $('#addClaim').click(function () {
+            if ($('#newType').val() && $('#newValue').val()) {
+                $('#claimsTable tbody').append('<tr><td data-field="key">' + $('#newType').val() + '</td>' +
+                    '<td data-field="value">' + $('#newValue').val() + '</td><td><a class="removeClaim" href="#">Remove</a></td></tr>');
+                $('#newType, #newValue').val('');
+            }
+            else
+                alert('Incomplete entry');
+        });
+
+        $("#editForm").submit(function () {
+            $('#claimsTable tbody tr:gt(0)').each(function (index, elem) {
+                var key = $(this).find('td[data-field=key]');
+                key.append($('<input>').attr('name', 'claims[' + index + '][key]').attr('type', 'hidden').val(key.text()));
+
+                var val = $(this).find('td[data-field=value]');
+                val.append($('<input>').attr('name', 'claims[' + index + '][value]').attr('type', 'hidden').val(val.text()));
+            });
+        });
+
+        function userDone(data, status, xhr) {
+            $('#userModal').modal('hide');
+            $('#usersTable').DataTable().draw();
+        }
+
+        function userFail(xhr, status, error) {
+            $('#userError').html(xhr.responseText || error).fadeIn();
+        }
+
+        function editDone(data, status, xhr) {
+            $('#editModal').modal('hide');
+            $('#usersTable').DataTable().draw();
+        }
+
+        function editFail(xhr, status, error) {
+            $('#editError').html(xhr.responseText || error).fadeIn();
+            $('#claimsTable input[type="hidden"]').remove();
+        }
+
+        function delDone(data, status, xhr) {
+            $('#usersTable').DataTable().draw();
+        }
+
+        function delFail(xhr, status, error) {
+            alert(xhr.responseText || error);
+        }
+
+        function pwdDone(data, status, xhr) {
+            $('#pwdModal').modal('hide');
+        }
+
+        function pwdFail(xhr, status, error) {
+            $('#pwdError').html(xhr.responseText || error).fadeIn();
+        }
+    </script>
+}
