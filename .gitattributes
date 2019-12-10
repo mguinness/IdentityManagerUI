@@ -1,1 +1,2 @@
-WebApplication1/* linguist-vendored
+WebApplication1/wwwroot/lib/* linguist-vendored
+IdentityManagerUI/Areas/IdentityManager/Views/Home/* linguist-vendored
