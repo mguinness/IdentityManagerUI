@@ -116,7 +116,7 @@ namespace IdentityManagerUI.Areas.IdentityManager.Controllers
         }
 
         [HttpPost("api/[action]")]
-        public async Task<ActionResult> UpdateUser(string id, string email, string locked, string[] roles, List<KeyValuePair<string, string>> claims)
+        public async Task<ActionResult> UpdateUser(string id, string email, bool locked, string[] roles, List<KeyValuePair<string, string>> claims)
         {
             try
             {
@@ -125,7 +125,7 @@ namespace IdentityManagerUI.Areas.IdentityManager.Controllers
                     return NotFound("User not found.");
 
                 user.Email = email;
-                user.LockoutEnd = locked == null ? default(DateTimeOffset?) : DateTimeOffset.MaxValue;
+                user.LockoutEnd = locked ? DateTimeOffset.MaxValue : default(DateTimeOffset?);
 
                 var result = await _userManager.UpdateAsync(user);
                 if (result.Succeeded)

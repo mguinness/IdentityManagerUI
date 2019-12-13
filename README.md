@@ -1,5 +1,5 @@
 # Identity Manager UI
-Identity management system for [ASP.NET Core Identity](https://github.com/aspnet/AspNetCore/tree/master/src/Identity).
+Identity management system for [ASP.NET Core Identity](https://github.com/aspnet/AspNetCore/tree/master/src/Identity) for use with .NET Core 3.1 and Bootstrap 4.
 
 ## Introduction
 When creating a new ASP.NET Core project you have the option to change the authentication to individual user accounts that adds a reference to [Microsoft.AspNetCore.Identity.UI](https://www.nuget.org/packages/Microsoft.AspNetCore.Identity.UI/) to include the identity system into your website. This includes registration, login and several pages related to user account self management like 2FA and password reset.
