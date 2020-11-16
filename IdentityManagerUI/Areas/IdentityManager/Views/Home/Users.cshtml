@@ -178,9 +178,8 @@
                             });
 
                             $.each(data.claims, function (index, value) {
-                                //Key/Value props not camel cased (https://github.com/dotnet/corefx/issues/41309)
-                                $('#claimsTable tbody').append('<tr><td data-field="Key">' + value.Key + '</td>' +
-                                    '<td data-field="Value">' + value.Value + '</td><td><a class="removeClaim" href="#">Remove</a></td></tr>');
+                                $('#claimsTable tbody').append('<tr><td data-field="key">' + value.Key + '</td>' +
+                                    '<td data-field="value">' + value.Value + '</td><td><a class="removeClaim" href="#">Remove</a></td></tr>');
                             });
 
                             $('#editModal').modal({ backdrop: 'static' });
