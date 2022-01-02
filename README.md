@@ -39,6 +39,28 @@ protected override void OnModelCreating(ModelBuilder builder)
     builder.Entity<ApplicationRole>().HasMany(r => r.Claims).WithOne().HasForeignKey(r => r.RoleId).IsRequired().OnDelete(DeleteBehavior.Cascade);
 }
 ```
+You can add `AddAdmin()` extension method to your `ApplicationDbContext` if you want to seed AdminUser.
+
+```CSharp
+protected override void OnModelCreating(ModelBuilder builder)
+{
+    base.OnModelCreating(builder);
+
+    builder.Entity<ApplicationUser>().HasMany(p => p.Roles).WithOne().HasForeignKey(p => p.UserId).IsRequired().OnDelete(DeleteBehavior.Cascade);
+    builder.Entity<ApplicationUser>().HasMany(e => e.Claims).WithOne().HasForeignKey(e => e.UserId).IsRequired().OnDelete(DeleteBehavior.Cascade);
+    builder.Entity<ApplicationRole>().HasMany(r => r.Claims).WithOne().HasForeignKey(r => r.RoleId).IsRequired().OnDelete(DeleteBehavior.Cascade);
+    builder.AddAdmin();
+}
+```
+Default AdminUser email is : admin@admin.com password is : Admin*123  
+Also you can override it like this :
+
+```CSharp
+protected override void OnModelCreating(ModelBuilder builder)
+{
+    builder.AddAdmin("admin2@admin","admin*12345");
+}
+```
 
 ## Setup
 As the example project uses [FileContextCore](https://github.com/morrisjdev/FileContextCore) as the database provider there is no database setup needed since the ASP.NET Identity Core tables are stored in files, however for your own project you should use a [Database Provider](https://docs.microsoft.com/en-us/ef/core/providers/) to store these.
