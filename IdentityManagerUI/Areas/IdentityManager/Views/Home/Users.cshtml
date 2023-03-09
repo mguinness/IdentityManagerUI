@@ -174,7 +174,7 @@
                             $('#editForm input[name=id]').val(data.id);
 
                             $.each(data.roles, function (index, value) {
-                                $('#editForm :checkbox[value=' + value + ']').prop('checked', true);
+                                $('#editForm :checkbox[value="' + value + '"]').prop('checked', true);
                             });
 
                             $.each(data.claims, function (index, value) {
