@@ -1,6 +1,8 @@
 # Identity Manager UI
 Identity management system for [ASP.NET Core Identity](https://github.com/aspnet/AspNetCore/tree/master/src/Identity) for use with .NET Core 3.1 and Bootstrap 4.  If you need to upgrade to .NET 5.0 or 6.0 change `TargetFramework` accordingly in your csproj file and use a different [database provider](https://docs.microsoft.com/en-us/ef/core/providers).  To upgrade Bootstrap see issue [#12](https://github.com/mguinness/IdentityManagerUI/issues/12) for help.
 
+**This GitHub project is deprecated.** Ongoing development can be found at <https://github.com/mguinness/IdentityManagerBlazor>.
+
 ## Introduction
 When creating a new ASP.NET Core project you have the option to change the authentication to individual user accounts that adds a reference to [Microsoft.AspNetCore.Identity.UI](https://www.nuget.org/packages/Microsoft.AspNetCore.Identity.UI/) to include the identity system into your website. This includes registration, login and several pages related to user account self management like 2FA and password reset.
 
